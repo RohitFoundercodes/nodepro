@@ -1,0 +1,46 @@
+version: "3.8"
+
+services:
+  db:
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: proapp
+      MYSQL_USER: root
+      MYSQL_PASSWORD: ""
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+  app1:
+    build: .
+    env_file: .env
+    environment:
+      DB_HOST: db
+      PORT: 3000
+    depends_on:
+      - db
+
+  app2:
+    build: .
+    env_file: .env
+    environment:
+      DB_HOST: db
+      PORT: 3000
+    depends_on:
+      - db
+
+  apache:
+    image: httpd:alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - ./apache/httpd.conf:/usr/local/apache2/conf/httpd.conf:ro
+    depends_on:
+      - app1
+      - app2
+
+volumes:
+  db_data:

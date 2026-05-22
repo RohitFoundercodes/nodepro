@@ -120,6 +120,38 @@ or for production:
 npm start
 ```
 
+## Docker and Load Balancing
+
+This project includes Docker support and an Apache load balancer configuration.
+
+1. Build and start all services:
+
+```bash
+docker compose up --build
+```
+
+2. The API is available through Apache at:
+
+```text
+http://localhost:8080
+```
+
+3. Apache forwards requests to two Node.js app replicas (`app1` and `app2`).
+
+4. Run migrations from the container:
+
+```bash
+docker compose exec app1 npm run migrate
+```
+
+5. Stop the stack:
+
+```bash
+docker compose down
+```
+
+> The `docker-compose.yml` service names are `app1`, `app2`, `db`, and `apache`.
+
 ## Available commands
 
 - `npm install`
